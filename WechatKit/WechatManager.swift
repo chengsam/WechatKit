@@ -52,6 +52,8 @@ public class WechatManager: NSObject {
     public static var csrfState = "73746172626f796368696e61"
     /// 分享Delegation
     public weak var shareDelegate: WechatManagerShareDelegate?
+    /// WeChat Pay Delegate
+    public weak var payDelegate: WechatManagerPayDelegate?
     /// A shared instance
     public static let shared: WechatManager = {
         let instalce = WechatManager()
@@ -114,7 +116,9 @@ extension WechatManager: WXApiDelegate {
             } else {
                 completionHandler(.failure(WXErrCodeCommon.rawValue))
             }
-        }
+        } else if let temp = resp as? PayResp {
+          self.payDelegate?.receivedPaymentResponse(code: temp.errCode)
+      }
     }
 
 }
